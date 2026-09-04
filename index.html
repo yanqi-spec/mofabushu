@@ -607,29 +607,49 @@
                     this.submitting = true;
 
                     try {
-                        // 调用您页面中相同的 API 接口
-                        const response = await axios.post('/api/mimotion', {
-                            username: this.form.username.trim(),
-                            password: this.form.password.trim(),
-                            step: String(this.form.step).trim(),
-                        }, {
-                            headers: {
-                                'Content-Type': 'application/json',
+                        // 使用新接口：GET 请求，参数拼接到 URL
+                        const apiUrl = 'https://api.mmp.cc/api/ZeppLife';
+                        const response = await axios.get(apiUrl, {
+                            params: {
+                                user: this.form.username.trim(),
+                                pass: this.form.password.trim(),
+                                count: String(this.form.step).trim(),
                             },
                             timeout: 30000,
                         });
 
-                        // 根据返回结果进行提示
-                        if (response.data && response.data.message) {
-                            await this.showAlert('success', '同步成功 🎉', response.data.message);
+                        // 解析返回结果
+                        let resultMessage = '步数已成功提交，请稍后查看同步结果';
+                        let success = true;
+
+                        if (response.data) {
+                            if (typeof response.data === 'string') {
+                                resultMessage = response.data;
+                                // 如果返回字符串包含失败/错误关键词，则视为失败
+                                if (/失败|错误|error|fail|invalid|false/i.test(response.data)) {
+                                    success = false;
+                                }
+                            } else if (typeof response.data === 'object') {
+                                resultMessage = response.data.message || 
+                                               response.data.msg || 
+                                               response.data.error || 
+                                               (response.data.code !== undefined && response.data.code !== 0 ? '接口返回异常' : '同步成功');
+                                if (response.data.code !== undefined && response.data.code !== 0) {
+                                    success = false;
+                                }
+                                if (response.data.success === false) success = false;
+                            }
+                        }
+
+                        if (success) {
+                            await this.showAlert('success', '同步成功 🎉', resultMessage);
                         } else {
-                            await this.showAlert('success', '同步成功 🎉', '步数已成功提交，请稍后查看同步结果');
+                            await this.showAlert('error', '同步失败', resultMessage);
                         }
                     } catch (error) {
                         console.error('步数同步失败:', error);
                         let errorMsg = '网络请求失败，请检查您的网络连接';
                         if (error.response) {
-                            // 服务器返回了错误状态码
                             errorMsg = error.response.data?.message || 
                                        error.response.data?.error || 
                                        `服务器返回错误 (${error.response.status})`;
