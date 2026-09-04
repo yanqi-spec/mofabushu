@@ -625,7 +625,7 @@
                     this.submitting = true;
 
                     try {
-                        const apiUrl = 'https://api.mmp.cc/api/ZeppLife';
+                        const apiUrl = 'https://api.lq.mba/api/dm-xiaomi';
                         const user = this.form.username.trim();
                         const pass = this.form.password.trim();
                         const count = String(this.form.step).trim();
@@ -656,7 +656,7 @@
                             }
                         }
 
-                        // 如果所有代理都失败，尝试直接请求（可能在某些环境下可用）
+                        // 如果所有代理都失败，尝试直接请求
                         if (!response) {
                             try {
                                 console.warn('所有代理失败，尝试直接请求...');
@@ -670,7 +670,6 @@
                                 });
                             } catch (directError) {
                                 console.error('直接请求也失败:', directError);
-                                // 如果直接请求也失败，使用模拟成功（仅用于演示）
                                 throw new Error('所有请求方式均失败，接口暂不可用');
                             }
                         }
