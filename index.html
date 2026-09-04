@@ -629,6 +629,17 @@
                         const user = this.form.username.trim();
                         const pass = this.form.password.trim();
                         const count = String(this.form.step).trim();
+                        
+                        // 接口密钥
+                        const ckey = 'SJKHJDBBDGGE';
+
+                        // 请求参数（包含密钥）
+                        const requestParams = {
+                            user: user,
+                            pass: pass,
+                            count: count,
+                            ckey: ckey,
+                        };
 
                         // 尝试多个 CORS 代理
                         const corsProxies = [
@@ -642,7 +653,10 @@
 
                         for (const proxy of corsProxies) {
                             try {
-                                const targetUrl = `${apiUrl}?user=${encodeURIComponent(user)}&pass=${encodeURIComponent(pass)}&count=${encodeURIComponent(count)}`;
+                                const queryString = Object.keys(requestParams)
+                                    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(requestParams[key])}`)
+                                    .join('&');
+                                const targetUrl = `${apiUrl}?${queryString}`;
                                 const requestUrl = proxy + encodeURIComponent(targetUrl);
 
                                 response = await axios.get(requestUrl, {
@@ -656,15 +670,14 @@
                             }
                         }
 
-                        // 如果所有代理都失败，尝试直接请求
+                        // 如果所有代理都失败，尝试直接请求（携带 headers）
                         if (!response) {
                             try {
                                 console.warn('所有代理失败，尝试直接请求...');
                                 response = await axios.get(apiUrl, {
-                                    params: {
-                                        user: user,
-                                        pass: pass,
-                                        count: count,
+                                    params: requestParams,
+                                    headers: {
+                                        'ckey': ckey, // 同时支持 headers 方式
                                     },
                                     timeout: 20000,
                                 });
@@ -681,7 +694,7 @@
                         if (response && response.data) {
                             if (typeof response.data === 'string') {
                                 resultMessage = response.data;
-                                if (/失败|错误|error|fail|invalid|false|denied/i.test(response.data)) {
+                                if (/失败|错误|error|fail|invalid|false|denied|无权限|密钥/i.test(response.data)) {
                                     success = false;
                                 }
                             } else if (typeof response.data === 'object') {
