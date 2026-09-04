@@ -301,8 +301,8 @@
             background: #fff;
             box-shadow: 0 0 0 4px rgba(131, 58, 180, 0.08);
         }
-        .form-input:focus ~ .input-icon,
-        .form-input:focus + .input-icon {
+        .form-input:focus~.input-icon,
+        .form-input:focus+.input-icon {
             color: #833ab4;
         }
 
@@ -362,10 +362,12 @@
             font-size: 16px;
         }
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
-        /* ========== 成功 / 错误提示 (SweetAlert 自定义样式) ========== */
+        /* ========== 成功 / 错误提示 ========== */
         .swal2-popup {
             border-radius: 24px !important;
             font-family: var(--font-family) !important;
@@ -401,16 +403,32 @@
 
         /* ========== 动画 ========== */
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(24px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ========== 响应式 ========== */
@@ -607,26 +625,64 @@
                     this.submitting = true;
 
                     try {
-                        // 使用新接口：GET 请求，参数拼接到 URL
                         const apiUrl = 'https://api.mmp.cc/api/ZeppLife';
-                        const response = await axios.get(apiUrl, {
-                            params: {
-                                user: this.form.username.trim(),
-                                pass: this.form.password.trim(),
-                                count: String(this.form.step).trim(),
-                            },
-                            timeout: 30000,
-                        });
+                        const user = this.form.username.trim();
+                        const pass = this.form.password.trim();
+                        const count = String(this.form.step).trim();
 
-                        // 解析返回结果
+                        // 尝试多个 CORS 代理
+                        const corsProxies = [
+                            'https://corsproxy.io/?',
+                            'https://api.allorigins.win/raw?url=',
+                            'https://cors-anywhere.herokuapp.com/'
+                        ];
+
+                        let response = null;
+                        let lastError = null;
+
+                        for (const proxy of corsProxies) {
+                            try {
+                                const targetUrl = `${apiUrl}?user=${encodeURIComponent(user)}&pass=${encodeURIComponent(pass)}&count=${encodeURIComponent(count)}`;
+                                const requestUrl = proxy + encodeURIComponent(targetUrl);
+
+                                response = await axios.get(requestUrl, {
+                                    timeout: 20000,
+                                });
+                                break; // 成功则跳出循环
+                            } catch (error) {
+                                console.warn(`代理 ${proxy} 失败:`, error.message);
+                                lastError = error;
+                                // 继续尝试下一个代理
+                            }
+                        }
+
+                        // 如果所有代理都失败，尝试直接请求（可能在某些环境下可用）
+                        if (!response) {
+                            try {
+                                console.warn('所有代理失败，尝试直接请求...');
+                                response = await axios.get(apiUrl, {
+                                    params: {
+                                        user: user,
+                                        pass: pass,
+                                        count: count,
+                                    },
+                                    timeout: 20000,
+                                });
+                            } catch (directError) {
+                                console.error('直接请求也失败:', directError);
+                                // 如果直接请求也失败，使用模拟成功（仅用于演示）
+                                throw new Error('所有请求方式均失败，接口暂不可用');
+                            }
+                        }
+
+                        // 解析响应
                         let resultMessage = '步数已成功提交，请稍后查看同步结果';
                         let success = true;
 
-                        if (response.data) {
+                        if (response && response.data) {
                             if (typeof response.data === 'string') {
                                 resultMessage = response.data;
-                                // 如果返回字符串包含失败/错误关键词，则视为失败
-                                if (/失败|错误|error|fail|invalid|false/i.test(response.data)) {
+                                if (/失败|错误|error|fail|invalid|false|denied/i.test(response.data)) {
                                     success = false;
                                 }
                             } else if (typeof response.data === 'object') {
@@ -646,16 +702,21 @@
                         } else {
                             await this.showAlert('error', '同步失败', resultMessage);
                         }
+
                     } catch (error) {
                         console.error('步数同步失败:', error);
                         let errorMsg = '网络请求失败，请检查您的网络连接';
-                        if (error.response) {
+
+                        if (error.message && error.message.includes('所有请求方式均失败')) {
+                            errorMsg = '接口暂时无法访问（CORS 限制），请稍后重试或联系开发者';
+                        } else if (error.response) {
                             errorMsg = error.response.data?.message || 
                                        error.response.data?.error || 
                                        `服务器返回错误 (${error.response.status})`;
                         } else if (error.code === 'ECONNABORTED') {
                             errorMsg = '请求超时，请稍后重试';
                         }
+
                         await this.showAlert('error', '同步失败', errorMsg);
                     } finally {
                         this.submitting = false;
