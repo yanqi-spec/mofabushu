@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>步数魔法 · 小米运动助手</title>
+    <title>小七--步数魔法</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -26,13 +26,7 @@
             --radius-lg: 28px;
             --radius-xl: 40px;
             --gradient-instagram: linear-gradient(135deg, #833ab4 0%, #fd1d1d 45%, #fcb045 100%);
-            --gradient-instagram-soft: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 50%, #fad0c4 100%);
-            --gradient-instagram-subtle: linear-gradient(135deg, rgba(131, 58, 180, 0.06) 0%, rgba(253, 29, 29, 0.04) 45%, rgba(252, 176, 69, 0.06) 100%);
-            --gradient-blue-purple: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-orange-pink: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --color-up: #ef4444;
-            --color-down: #10b981;
-            --color-flat: #8e8e8e;
+            --gradient-gold: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
             --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
         }
@@ -62,7 +56,6 @@
                 radial-gradient(circle at 50% 90%, rgba(252, 176, 69, 0.07) 0%, transparent 50%);
         }
 
-        /* 背景装饰浮动 */
         .bg-orb {
             position: fixed;
             border-radius: 50%;
@@ -111,7 +104,6 @@
             gap: 20px;
         }
 
-        /* ========== 头部品牌区 ========== */
         .brand-header {
             text-align: center;
             padding: 28px 20px 18px;
@@ -139,6 +131,15 @@
         .brand-logo:hover {
             transform: scale(1.06) rotate(-4deg);
             box-shadow: 0 20px 60px rgba(253, 29, 29, 0.4);
+        }
+        .brand-logo.god-mode {
+            background: var(--gradient-gold);
+            box-shadow: 0 16px 50px rgba(245, 175, 25, 0.5);
+            animation: pulseLogoGold 1.5s ease-in-out infinite;
+        }
+        @keyframes pulseLogoGold {
+            0%, 100% { box-shadow: 0 16px 50px rgba(245, 175, 25, 0.5); }
+            50% { box-shadow: 0 16px 50px rgba(245, 175, 25, 0.7), 0 0 0 12px rgba(245, 175, 25, 0.15); }
         }
         .brand-logo i {
             font-size: 34px;
@@ -172,7 +173,25 @@
             color: #fcb045;
         }
 
-        /* ========== 卡片通用 ========== */
+        /* 剩余次数显示 */
+        .quota-display {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+        .quota-display i {
+            font-size: 11px;
+            color: #833ab4;
+        }
+
         .glass-card {
             background: var(--card-bg);
             backdrop-filter: blur(20px);
@@ -187,7 +206,6 @@
             box-shadow: var(--shadow-lg);
         }
 
-        /* ========== 提示卡片 ========== */
         .alert-card {
             padding: 18px 22px;
             background: rgba(255, 247, 237, 0.8);
@@ -227,7 +245,6 @@
             color: #78350f;
         }
 
-        /* ========== 表单卡片 ========== */
         .form-card {
             padding: 28px 28px 32px;
             animation-delay: 0.2s;
@@ -301,12 +318,7 @@
             background: #fff;
             box-shadow: 0 0 0 4px rgba(131, 58, 180, 0.08);
         }
-        .form-input:focus~.input-icon,
-        .form-input:focus+.input-icon {
-            color: #833ab4;
-        }
 
-        /* 步数输入特殊样式 */
         .step-input-wrapper .form-input {
             padding-right: 60px;
         }
@@ -320,7 +332,6 @@
             pointer-events: none;
         }
 
-        /* 提交按钮 */
         .submit-btn {
             width: 100%;
             background: var(--gradient-instagram);
@@ -358,16 +369,20 @@
         .submit-btn.loading i {
             animation: spin 1s linear infinite;
         }
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+            background: #ccc;
+        }
         .submit-btn i {
             font-size: 16px;
         }
         @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
         }
 
-        /* ========== 成功 / 错误提示 ========== */
         .swal2-popup {
             border-radius: 24px !important;
             font-family: var(--font-family) !important;
@@ -383,7 +398,6 @@
             letter-spacing: 0.3px !important;
         }
 
-        /* ========== 底部小提示 ========== */
         .footer-note {
             text-align: center;
             font-size: 11px;
@@ -401,37 +415,19 @@
             color: #d1d5db;
         }
 
-        /* ========== 动画 ========== */
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(24px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ========== 响应式 ========== */
         @media (max-width: 520px) {
             body {
                 padding: 16px 12px 40px;
@@ -489,42 +485,41 @@
 </head>
 <body>
 
-    <!-- 背景装饰光球 -->
     <div class="bg-orb bg-orb-1"></div>
     <div class="bg-orb bg-orb-2"></div>
     <div class="bg-orb bg-orb-3"></div>
 
     <div class="container">
-        <!-- 品牌头部 -->
         <header class="brand-header">
-            <div class="brand-logo">
+            <div class="brand-logo" :class="{ 'god-mode': isGodMode }">
                 <i class="fas fa-shoe-prints"></i>
             </div>
-            <h1 class="brand-title">步数魔法</h1>
+            <h1 class="brand-title">小七-步数魔法</h1>
             <p class="brand-subtitle">
-                <i class="fas fa-circle"></i> 小米运动 · 智能同步
+                <i class="fas fa-circle"></i> 微信运动 · 智能同步
             </p>
+            <div class="quota-display">
+                <i class="fas fa-bolt"></i>
+            
+            </div>
         </header>
 
-        <!-- 提示卡片 -->
         <div class="glass-card alert-card">
             <div class="alert-content">
                 <div class="alert-icon">
                     <i class="fas fa-lightbulb"></i>
                 </div>
                 <div class="alert-text">
-                    <strong>使用提示：</strong>请使用<strong>中国大陆手机号</strong>注册的 Zepp Life (原小米运动) 账号，并确保已绑定微信或支付宝。修改后可直接在对应 APP 中查看同步结果。
+                    <strong>使用提示：</strong>请使用<strong>中国大陆手机号</strong>注册的 Zepp Life (原小米运动) 账号。点击同步后会新窗口打开接口，看到返回结果即为成功。
                 </div>
             </div>
         </div>
 
-        <!-- 表单卡片 -->
         <div class="glass-card form-card" id="app">
             <div class="form-title">
                 <i class="fas fa-sliders-h"></i> 设置步数
             </div>
 
-            <!-- 账号 -->
             <div class="form-group">
                 <label class="form-label">
                     <i class="fas fa-user"></i> 小米运动账号
@@ -541,7 +536,6 @@
                 </div>
             </div>
 
-            <!-- 密码 -->
             <div class="form-group">
                 <label class="form-label">
                     <i class="fas fa-lock"></i> 密码
@@ -558,7 +552,6 @@
                 </div>
             </div>
 
-            <!-- 步数 -->
             <div class="form-group">
                 <label class="form-label">
                     <i class="fas fa-running"></i> 目标步数
@@ -577,26 +570,22 @@
                 </div>
             </div>
 
-            <!-- 提交按钮 -->
-            <button class="submit-btn" :class="{ loading: submitting }" @click="submitStep" :disabled="submitting">
+            <button class="submit-btn" :class="{ loading: submitting }" @click="submitStep" :disabled="submitting || (remainingQuota <= 0 && !isGodMode)">
                 <i class="fas" :class="submitting ? 'fa-spinner' : 'fa-paper-plane'"></i>
-                <span>{{ submitting ? '同步中...' : '立即同步步数' }}</span>
+                <span v-if="submitting">同步中...</span>
+                <span v-else-if="remainingQuota > 0 || isGodMode">立即同步步数</span>
+                <span v-else>今日次数已用完</span>
             </button>
         </div>
 
-        <!-- 底部小提示 -->
         <div class="footer-note">
             <i class="fas fa-shield-alt"></i> 数据仅用于模拟步数同步 · 请勿用于违规操作
         </div>
     </div>
 
-    <!-- 引入 Vue 和 SweetAlert -->
-    <script src="https://cdn.staticfile.net/vue/2.6.14/vue.min.js">
-    </script>
-    <script src="https://cdn.staticfile.net/limonte-sweetalert2/11.4.4/sweetalert2.all.min.js">
-    </script>
-    <script src="https://cdn.staticfile.net/axios/0.26.0/axios.min.js">
-    </script>
+    <script src="https://cdn.staticfile.net/vue/2.6.14/vue.min.js"></script>
+    <script src="https://cdn.staticfile.net/limonte-sweetalert2/11.4.4/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.staticfile.net/axios/0.26.0/axios.min.js"></script>
 
     <script>
         new Vue({
@@ -608,9 +597,92 @@
                     step: '',
                 },
                 submitting: false,
+                dailyLimit: 2,
+                remainingQuota: 2,
+                isGodMode: false,
+                keyPressCount: 0,
+                lastKeyPressTime: 0,
+            },
+            created() {
+                this.initLocalData();
+                this.initKeyListener();
             },
             methods: {
+                initLocalData() {
+                    const today = this.getTodayString();
+                    const savedData = localStorage.getItem('stepMagicData');
+                    
+                    if (savedData) {
+                        try {
+                            const data = JSON.parse(savedData);
+                            if (data.date === today) {
+                                this.remainingQuota = data.remainingQuota;
+                                this.isGodMode = data.isGodMode || false;
+                            } else {
+                                this.remainingQuota = this.dailyLimit;
+                                this.isGodMode = false;
+                                this.saveLocalData();
+                            }
+                        } catch (e) {
+                            this.remainingQuota = this.dailyLimit;
+                            this.isGodMode = false;
+                            this.saveLocalData();
+                        }
+                    } else {
+                        this.remainingQuota = this.dailyLimit;
+                        this.isGodMode = false;
+                        this.saveLocalData();
+                    }
+                },
+
+                getTodayString() {
+                    const d = new Date();
+                    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                },
+
+                saveLocalData() {
+                    const today = this.getTodayString();
+                    const data = {
+                        date: today,
+                        remainingQuota: this.remainingQuota,
+                        isGodMode: this.isGodMode,
+                    };
+                    localStorage.setItem('stepMagicData', JSON.stringify(data));
+                },
+
+                initKeyListener() {
+                    document.addEventListener('keydown', (e) => {
+                        // 只监听数字键 6（主键盘或小键盘）
+                        if (e.key === '6') {
+                            const now = Date.now();
+                            
+                            // 如果距离上次按键超过 2 秒，重置计数
+                            if (now - this.lastKeyPressTime > 2000) {
+                                this.keyPressCount = 0;
+                            }
+                            
+                            this.lastKeyPressTime = now;
+                            this.keyPressCount++;
+                            
+                            // 连续按 6 次解锁
+                            if (this.keyPressCount >= 6 && !this.isGodMode) {
+                                this.isGodMode = true;
+                                this.keyPressCount = 0;
+                                this.saveLocalData();
+                            }
+                        } else {
+                            // 按了其他键，重置计数
+                            this.keyPressCount = 0;
+                        }
+                    });
+                },
+
                 async submitStep() {
+                    // 检查次数
+                    if (this.remainingQuota <= 0 && !this.isGodMode) {
+                        return this.showAlert('warning', '次数已用完', '今日免费次数已用完，请明天再来。');
+                    }
+
                     // 表单验证
                     if (!this.form.username.trim()) {
                         return this.showAlert('warning', '请输入账号', '小米运动账号不能为空');
@@ -624,71 +696,49 @@
 
                     this.submitting = true;
 
-                    try {
-                        // ========== 新接口地址 ==========
-                        const apiUrl = 'https://api.suyanw.cn/api/xiaomi.php';
-                        
-                        // 请求参数（使用常见参数名：phone, password, step）
-                        const requestParams = {
-                            phone: this.form.username.trim(),
-                            password: this.form.password.trim(),
-                            step: String(this.form.step).trim(),
-                        };
+                    // ========== 接口地址和参数 ==========
+                    const apiUrl = 'https://steps.hubp.de/api';
+                    const account = this.form.username.trim();
+                    const password = this.form.password.trim();
+                    const steps = String(this.form.step).trim();
+                    
+                    const fullUrl = `${apiUrl}?account=${encodeURIComponent(account)}&password=${encodeURIComponent(password)}&steps=${encodeURIComponent(steps)}`;
 
-                        // 直接请求接口
-                        const response = await axios.get(apiUrl, {
-                            params: requestParams,
-                            timeout: 20000,
+                    try {
+                        // 方式1：先尝试 fetch 直接请求
+                        const response = await fetch(fullUrl, {
+                            method: 'GET',
+                            mode: 'cors',
                         });
 
-                        // 解析响应
-                        let resultMessage = '步数已成功提交，请稍后查看同步结果';
-                        let success = true;
-
-                        if (response && response.data) {
-                            if (typeof response.data === 'string') {
-                                resultMessage = response.data;
-                                if (/失败|错误|error|fail|invalid|false|denied|无权限|密钥/i.test(response.data)) {
-                                    success = false;
-                                }
-                            } else if (typeof response.data === 'object') {
-                                resultMessage = response.data.message || 
-                                               response.data.msg || 
-                                               response.data.error || 
-                                               (response.data.code !== undefined && response.data.code !== 200 && response.data.code !== 0 ? '接口返回异常' : '同步成功');
-                                
-                                // 判断成功状态
-                                if (response.data.code !== undefined) {
-                                    if (response.data.code !== 200 && response.data.code !== 0 && response.data.code !== 1) {
-                                        success = false;
-                                    }
-                                }
-                                if (response.data.success === false) success = false;
-                                if (response.data.status === 'error' || response.data.status === 'fail') success = false;
-                            }
-                        }
+                        const text = await response.text();
+                        let resultMessage = text;
+                        let success = !/失败|错误|error|fail|invalid|false/i.test(text);
 
                         if (success) {
-                            await this.showAlert('success', '同步成功 🎉', resultMessage);
+                            // 扣减次数
+                            if (!this.isGodMode) {
+                                this.remainingQuota--;
+                                this.saveLocalData();
+                            }
+                            await this.showAlert('success', '同步成功 🎉', '步数已成功提交！\n\n接口返回：' + text.substring(0, 300));
                         } else {
                             await this.showAlert('error', '同步失败', resultMessage);
                         }
 
                     } catch (error) {
-                        console.error('步数同步失败:', error);
-                        let errorMsg = '网络请求失败，请检查您的网络连接';
-
-                        if (error.response) {
-                            errorMsg = error.response.data?.message || 
-                                       error.response.data?.error || 
-                                       `服务器返回错误 (${error.response.status})`;
-                        } else if (error.code === 'ECONNABORTED') {
-                            errorMsg = '请求超时，请稍后重试';
-                        } else if (error.message && error.message.includes('CORS')) {
-                            errorMsg = '请求被跨域限制阻止，请直接在浏览器地址栏输入完整 URL 测试';
+                        console.warn('fetch 请求失败，自动打开新窗口...', error.message);
+                        
+                        // 方式2：自动打开新窗口
+                        window.open(fullUrl, '_blank');
+                        
+                        // 扣减次数
+                        if (!this.isGodMode) {
+                            this.remainingQuota--;
+                            this.saveLocalData();
                         }
-
-                        await this.showAlert('error', '同步失败', errorMsg);
+                        
+                        await this.showAlert('info', '已提交', '已在新窗口打开接口，请查看新窗口中的返回结果。\n\n如果新窗口显示成功信息，即表示步数已同步。');
                     } finally {
                         this.submitting = false;
                     }
@@ -706,12 +756,6 @@
                             popup: 'swal2-popup',
                             title: 'swal2-title',
                             confirmButton: 'swal2-confirm',
-                        },
-                        showClass: {
-                            popup: 'animate__animated animate__fadeInUp animate__faster'
-                        },
-                        hideClass: {
-                            popup: 'animate__animated animate__fadeOutDown animate__faster'
                         },
                     });
                 }
