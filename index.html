@@ -3,285 +3,720 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小米运动刷步数</title>
+    <title>步数魔法 · 小米运动助手</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --bg: #f8f9fc;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --text-primary: #1a1a1a;
+            --text-secondary: #8e8e8e;
+            --text-tertiary: #c7c7c7;
+            --border: #eef0f4;
+            --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 32px 80px rgba(0, 0, 0, 0.13);
+            --radius-sm: 12px;
+            --radius-md: 20px;
+            --radius-lg: 28px;
+            --radius-xl: 40px;
+            --gradient-instagram: linear-gradient(135deg, #833ab4 0%, #fd1d1d 45%, #fcb045 100%);
+            --gradient-instagram-soft: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 50%, #fad0c4 100%);
+            --gradient-instagram-subtle: linear-gradient(135deg, rgba(131, 58, 180, 0.06) 0%, rgba(253, 29, 29, 0.04) 45%, rgba(252, 176, 69, 0.06) 100%);
+            --gradient-blue-purple: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-orange-pink: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --color-up: #ef4444;
+            --color-down: #10b981;
+            --color-flat: #8e8e8e;
+            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: var(--font-family);
+            background: var(--bg);
+            color: var(--text-primary);
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 32px 20px 60px;
+            position: relative;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(131, 58, 180, 0.06) 0%, transparent 40%),
+                radial-gradient(circle at 90% 10%, rgba(253, 29, 29, 0.05) 0%, transparent 45%),
+                radial-gradient(circle at 50% 90%, rgba(252, 176, 69, 0.07) 0%, transparent 50%);
+        }
+
+        /* 背景装饰浮动 */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+            animation: floatOrb 12s ease-in-out infinite alternate;
+        }
+        .bg-orb-1 {
+            width: 400px;
+            height: 400px;
+            background: rgba(131, 58, 180, 0.15);
+            top: -100px;
+            right: -80px;
+        }
+        .bg-orb-2 {
+            width: 350px;
+            height: 350px;
+            background: rgba(253, 29, 29, 0.1);
+            bottom: -50px;
+            left: -60px;
+            animation-delay: -4s;
+        }
+        .bg-orb-3 {
+            width: 250px;
+            height: 250px;
+            background: rgba(252, 176, 69, 0.12);
+            top: 40%;
+            left: 45%;
+            animation-delay: -8s;
+        }
+
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, -20px) scale(1.1); }
+        }
+
+        .container {
+            max-width: 480px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* ========== 头部品牌区 ========== */
+        .brand-header {
+            text-align: center;
+            padding: 28px 20px 18px;
+            animation: fadeInDown 0.7s ease-out;
+        }
+
+        .brand-logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 76px;
+            height: 76px;
+            border-radius: 28px;
+            background: var(--gradient-instagram);
+            margin-bottom: 16px;
+            box-shadow: 0 16px 50px rgba(253, 29, 29, 0.25);
+            position: relative;
+            transition: var(--transition);
+            animation: pulseLogo 2s ease-in-out infinite;
+        }
+        @keyframes pulseLogo {
+            0%, 100% { box-shadow: 0 16px 50px rgba(253, 29, 29, 0.25); }
+            50% { box-shadow: 0 16px 50px rgba(253, 29, 29, 0.4), 0 0 0 12px rgba(253, 29, 29, 0.05); }
+        }
+        .brand-logo:hover {
+            transform: scale(1.06) rotate(-4deg);
+            box-shadow: 0 20px 60px rgba(253, 29, 29, 0.4);
+        }
+        .brand-logo i {
+            font-size: 34px;
+            color: #fff;
+            filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.2));
+        }
+
+        .brand-title {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            background: var(--gradient-instagram);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+        .brand-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 400;
+            letter-spacing: 0.3px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            gap: 8px;
         }
-        .container {
-            background: #fff;
-            border-radius: 16px;
-            padding: 40px;
-            width: 100%;
-            max-width: 420px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        .brand-subtitle i {
+            font-size: 10px;
+            color: #fcb045;
         }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
+
+        /* ========== 卡片通用 ========== */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            animation: fadeInUp 0.6s ease-out both;
         }
-        .header .icon {
-            font-size: 48px;
-            margin-bottom: 10px;
+        .glass-card:hover {
+            box-shadow: var(--shadow-lg);
         }
-        .header h1 {
-            font-size: 22px;
-            color: #333;
-            margin-bottom: 6px;
+
+        /* ========== 提示卡片 ========== */
+        .alert-card {
+            padding: 18px 22px;
+            background: rgba(255, 247, 237, 0.8);
+            border: 1px solid rgba(252, 176, 69, 0.2);
+            border-radius: var(--radius-md);
+            animation-delay: 0.1s;
         }
-        .header p {
-            font-size: 13px;
-            color: #888;
+        .alert-content {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
         }
+        .alert-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: rgba(252, 176, 69, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .alert-icon i {
+            font-size: 16px;
+            color: #f59e0b;
+        }
+        .alert-text {
+            font-size: 12px;
+            color: #92400e;
+            line-height: 1.6;
+            font-weight: 400;
+            letter-spacing: 0.2px;
+        }
+        .alert-text strong {
+            font-weight: 600;
+            color: #78350f;
+        }
+
+        /* ========== 表单卡片 ========== */
+        .form-card {
+            padding: 28px 28px 32px;
+            animation-delay: 0.2s;
+        }
+        .form-title {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-title i {
+            font-size: 18px;
+            color: #833ab4;
+        }
+
         .form-group {
             margin-bottom: 18px;
         }
-        .form-group label {
-            display: block;
-            font-size: 14px;
+        .form-label {
+            font-size: 12px;
             font-weight: 600;
-            color: #555;
-            margin-bottom: 6px;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 12px 14px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 15px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        .form-group input:focus {
-            border-color: #667eea;
-        }
-        .step-presets {
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 8px;
             display: flex;
-            gap: 8px;
-            margin-top: 8px;
-            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
         }
-        .step-presets button {
-            flex: 1;
-            min-width: 70px;
-            padding: 8px 0;
-            border: 1px solid #ddd;
-            background: #f8f9fa;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            color: #555;
-            transition: all 0.2s;
+        .form-label i {
+            font-size: 11px;
+            color: var(--text-tertiary);
         }
-        .step-presets button:hover {
-            background: #667eea;
-            color: #fff;
-            border-color: #667eea;
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
         }
-        .btn-submit {
+        .input-wrapper .input-icon {
+            position: absolute;
+            left: 16px;
+            font-size: 14px;
+            color: var(--text-tertiary);
+            pointer-events: none;
+            transition: var(--transition);
+        }
+        .form-input {
             width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px 18px 14px 42px;
+            font-size: 14px;
+            font-family: var(--font-family);
+            color: var(--text-primary);
+            outline: none;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0.3px;
+        }
+        .form-input::placeholder {
+            color: var(--text-tertiary);
+            font-weight: 300;
+            letter-spacing: 0.2px;
+        }
+        .form-input:focus {
+            border-color: #833ab4;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(131, 58, 180, 0.08);
+        }
+        .form-input:focus~.input-icon,
+        .form-input:focus+.input-icon {
+            color: #833ab4;
+        }
+
+        /* 步数输入特殊样式 */
+        .step-input-wrapper .form-input {
+            padding-right: 60px;
+        }
+        .step-suffix {
+            position: absolute;
+            right: 14px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            letter-spacing: 0.3px;
+            pointer-events: none;
+        }
+
+        /* 提交按钮 */
+        .submit-btn {
+            width: 100%;
+            background: var(--gradient-instagram);
             color: #fff;
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
+            padding: 16px 24px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
+            font-family: var(--font-family);
             cursor: pointer;
-            transition: opacity 0.3s, transform 0.2s;
-            margin-top: 10px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            letter-spacing: 0.3px;
+            box-shadow: 0 8px 25px rgba(253, 29, 29, 0.35);
+            position: relative;
+            overflow: hidden;
+            margin-top: 8px;
         }
-        .btn-submit:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 35px rgba(253, 29, 29, 0.45);
         }
-        .btn-submit:active {
+        .submit-btn:active {
             transform: translateY(0);
+            box-shadow: 0 4px 15px rgba(253, 29, 29, 0.25);
         }
-        .btn-submit:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
+        .submit-btn.loading {
+            pointer-events: none;
+            opacity: 0.85;
         }
-        .result {
-            margin-top: 20px;
-            padding: 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            line-height: 1.6;
-            display: none;
-            word-break: break-all;
+        .submit-btn.loading i {
+            animation: spin 1s linear infinite;
         }
-        .result.success {
-            display: block;
-            background: #e8f5e9;
-            color: #2e7d32;
-            border: 1px solid #c8e6c9;
-        }
-        .result.error {
-            display: block;
-            background: #ffebee;
-            color: #c62828;
-            border: 1px solid #ffcdd2;
-        }
-        .result.loading {
-            display: block;
-            background: #e3f2fd;
-            color: #1565c0;
-            border: 1px solid #bbdefb;
-        }
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #1565c0;
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            vertical-align: middle;
-            margin-right: 8px;
+        .submit-btn i {
+            font-size: 16px;
         }
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
-        .note {
-            margin-top: 16px;
-            font-size: 12px;
-            color: #aaa;
+
+        /* ========== 成功 / 错误提示 ========== */
+        .swal2-popup {
+            border-radius: 24px !important;
+            font-family: var(--font-family) !important;
+            box-shadow: var(--shadow-xl) !important;
+        }
+        .swal2-title {
+            font-weight: 700 !important;
+            letter-spacing: -0.5px !important;
+        }
+        .swal2-confirm {
+            border-radius: 12px !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.3px !important;
+        }
+
+        /* ========== 底部小提示 ========== */
+        .footer-note {
             text-align: center;
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 8px;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            animation: fadeIn 0.8s ease-out 0.5s both;
+        }
+        .footer-note i {
+            font-size: 9px;
+            color: #d1d5db;
+        }
+
+        /* ========== 动画 ========== */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 520px) {
+            body {
+                padding: 16px 12px 40px;
+            }
+            .container {
+                gap: 14px;
+            }
+            .brand-header {
+                padding: 16px 12px 10px;
+            }
+            .brand-logo {
+                width: 60px;
+                height: 60px;
+                border-radius: 22px;
+                margin-bottom: 12px;
+            }
+            .brand-logo i {
+                font-size: 26px;
+            }
+            .brand-title {
+                font-size: 26px;
+            }
+            .brand-subtitle {
+                font-size: 12px;
+            }
+            .form-card {
+                padding: 20px 18px 24px;
+                border-radius: var(--radius-md);
+            }
+            .alert-card {
+                padding: 14px 16px;
+                border-radius: var(--radius-sm);
+            }
+            .form-title {
+                font-size: 16px;
+            }
+            .form-input {
+                padding: 12px 16px 12px 38px;
+                font-size: 13px;
+            }
+            .input-wrapper .input-icon {
+                left: 12px;
+                font-size: 12px;
+            }
+            .step-suffix {
+                right: 10px;
+                font-size: 10px;
+            }
+            .submit-btn {
+                padding: 14px 20px;
+                font-size: 15px;
+            }
         }
     </style>
 </head>
 <body>
+
+    <!-- 背景装饰光球 -->
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
     <div class="container">
-        <div class="header">
-            <div class="icon">🚶</div>
-            <h1>小米运动刷步数</h1>
-            <p>支持小米运动 / 微信 / 支付宝</p>
-        </div>
-        <form id="stepForm">
-            <div class="form-group">
-                <label>账号</label>
-                <input type="text" id="user" placeholder="手机号或邮箱" required>
+        <!-- 品牌头部 -->
+        <header class="brand-header">
+            <div class="brand-logo">
+                <i class="fas fa-shoe-prints"></i>
             </div>
-            <div class="form-group">
-                <label>密码</label>
-                <input type="password" id="pwd" placeholder="小米运动账号密码" required>
-            </div>
-            <div class="form-group">
-                <label>目标步数</label>
-                <input type="number" id="step" placeholder="最大 98800 步" min="1" max="98800" required>
-                <div class="step-presets">
-                    <button type="button" onclick="setStep(5000)">5000</button>
-                    <button type="button" onclick="setStep(10000)">10000</button>
-                    <button type="button" onclick="setStep(20000)">20000</button>
-                    <button type="button" onclick="setStep(30000)">30000</button>
-                    <button type="button" onclick="setStep(98800)">98800</button>
+            <h1 class="brand-title">步数魔法</h1>
+            <p class="brand-subtitle">
+                <i class="fas fa-circle"></i> 小米运动 · 智能同步
+            </p>
+        </header>
+
+        <!-- 提示卡片 -->
+        <div class="glass-card alert-card">
+            <div class="alert-content">
+                <div class="alert-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <div class="alert-text">
+                    <strong>使用提示：</strong>请使用<strong>中国大陆手机号</strong>注册的 Zepp Life (原小米运动) 账号，并确保已绑定微信或支付宝。修改后可直接在对应 APP 中查看同步结果。
                 </div>
             </div>
-            <button type="submit" class="btn-submit" id="submitBtn">立即刷步</button>
-        </form>
-        <div class="result" id="result"></div>
-        <div class="note">接口地址：api.suyanw.cn</div>
+        </div>
+
+        <!-- 表单卡片 -->
+        <div class="glass-card form-card" id="app">
+            <div class="form-title">
+                <i class="fas fa-sliders-h"></i> 设置步数
+            </div>
+
+            <!-- 账号 -->
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-user"></i> 小米运动账号
+                </label>
+                <div class="input-wrapper">
+                    <i class="fas fa-phone-alt input-icon"></i>
+                    <input 
+                        v-model="form.username" 
+                        type="text" 
+                        class="form-input" 
+                        placeholder="请输入手机号 / 账号"
+                        autocomplete="off"
+                    />
+                </div>
+            </div>
+
+            <!-- 密码 -->
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-lock"></i> 密码
+                </label>
+                <div class="input-wrapper">
+                    <i class="fas fa-key input-icon"></i>
+                    <input 
+                        v-model="form.password" 
+                        type="password" 
+                        class="form-input" 
+                        placeholder="请输入密码"
+                        autocomplete="off"
+                    />
+                </div>
+            </div>
+
+            <!-- 步数 -->
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-running"></i> 目标步数
+                </label>
+                <div class="input-wrapper step-input-wrapper">
+                    <i class="fas fa-shoe-prints input-icon"></i>
+                    <input 
+                        v-model="form.step" 
+                        type="number" 
+                        class="form-input" 
+                        placeholder="例如：20000"
+                        min="0"
+                        max="99999"
+                    />
+                    <span class="step-suffix">步</span>
+                </div>
+            </div>
+
+            <!-- 提交按钮 -->
+            <button class="submit-btn" :class="{ loading: submitting }" @click="submitStep" :disabled="submitting">
+                <i class="fas" :class="submitting ? 'fa-spinner' : 'fa-paper-plane'"></i>
+                <span>{{ submitting ? '同步中...' : '立即同步步数' }}</span>
+            </button>
+        </div>
+
+        <!-- 底部小提示 -->
+        <div class="footer-note">
+            <i class="fas fa-shield-alt"></i> 数据仅用于模拟步数同步 · 请勿用于违规操作
+        </div>
     </div>
 
+    <!-- 引入 Vue 和 SweetAlert -->
+    <script src="https://cdn.staticfile.net/vue/2.6.14/vue.min.js">
+    </script>
+    <script src="https://cdn.staticfile.net/limonte-sweetalert2/11.4.4/sweetalert2.all.min.js">
+    </script>
+    <script src="https://cdn.staticfile.net/axios/0.26.0/axios.min.js">
+    </script>
+
     <script>
-        // ========== 新接口地址 ==========
-        const API_URL = 'https://api.suyanw.cn/api/xiaomi.php';
+        new Vue({
+            el: '#app',
+            data: {
+                form: {
+                    username: '',
+                    password: '',
+                    step: '',
+                },
+                submitting: false,
+            },
+            methods: {
+                async submitStep() {
+                    // 表单验证
+                    if (!this.form.username.trim()) {
+                        return this.showAlert('warning', '请输入账号', '小米运动账号不能为空');
+                    }
+                    if (!this.form.password.trim()) {
+                        return this.showAlert('warning', '请输入密码', '密码不能为空');
+                    }
+                    if (!this.form.step || this.form.step <= 0) {
+                        return this.showAlert('warning', '请输入步数', '步数必须大于 0');
+                    }
 
-        function setStep(step) {
-            document.getElementById('step').value = step;
-        }
+                    this.submitting = true;
 
-        document.getElementById('stepForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const user = document.getElementById('user').value.trim();
-            const pwd = document.getElementById('pwd').value.trim();
-            const step = document.getElementById('step').value.trim();
-            const submitBtn = document.getElementById('submitBtn');
-            const resultDiv = document.getElementById('result');
+                    try {
+                        // ========== 新接口地址 ==========
+                        const apiUrl = 'https://api.suyanw.cn/api/xiaomi.php';
+                        
+                        // 请求参数（使用常见参数名：phone, password, step）
+                        const requestParams = {
+                            phone: this.form.username.trim(),
+                            password: this.form.password.trim(),
+                            step: String(this.form.step).trim(),
+                        };
 
-            // 简单校验
-            if (!user || !pwd || !step) {
-                showResult('请填写完整的账号、密码和步数', 'error');
-                return;
-            }
-            if (parseInt(step) > 98800 || parseInt(step) < 1) {
-                showResult('步数范围为 1 ~ 98800', 'error');
-                return;
-            }
+                        // 直接请求接口
+                        const response = await axios.get(apiUrl, {
+                            params: requestParams,
+                            timeout: 20000,
+                        });
 
-            // 构建请求 URL（使用常见参数名：phone, password, step）
-            const url = `${API_URL}/?phone=${encodeURIComponent(user)}&password=${encodeURIComponent(pwd)}&step=${encodeURIComponent(step)}`;
+                        // 解析响应
+                        let resultMessage = '步数已成功提交，请稍后查看同步结果';
+                        let success = true;
 
-            // 显示加载状态
-            submitBtn.disabled = true;
-            submitBtn.textContent = '提交中...';
-            resultDiv.className = 'result loading';
-            resultDiv.innerHTML = '<span class="spinner"></span>正在请求接口...';
+                        if (response && response.data) {
+                            if (typeof response.data === 'string') {
+                                resultMessage = response.data;
+                                if (/失败|错误|error|fail|invalid|false|denied|无权限|密钥/i.test(response.data)) {
+                                    success = false;
+                                }
+                            } else if (typeof response.data === 'object') {
+                                resultMessage = response.data.message || 
+                                               response.data.msg || 
+                                               response.data.error || 
+                                               (response.data.code !== undefined && response.data.code !== 200 && response.data.code !== 0 ? '接口返回异常' : '同步成功');
+                                
+                                // 判断成功状态
+                                if (response.data.code !== undefined) {
+                                    if (response.data.code !== 200 && response.data.code !== 0 && response.data.code !== 1) {
+                                        success = false;
+                                    }
+                                }
+                                if (response.data.success === false) success = false;
+                                if (response.data.status === 'error' || response.data.status === 'fail') success = false;
+                            }
+                        }
 
-            try {
-                const response = await fetch(url, {
-                    method: 'GET',
-                    mode: 'cors'
-                });
+                        if (success) {
+                            await this.showAlert('success', '同步成功 🎉', resultMessage);
+                        } else {
+                            await this.showAlert('error', '同步失败', resultMessage);
+                        }
 
-                // 尝试解析 JSON
-                let data;
-                try {
-                    data = await response.json();
-                } catch (jsonErr) {
-                    // 如果不是 JSON，显示原始文本
-                    const text = await response.text();
-                    showResult('接口返回异常（非 JSON）：' + text.substring(0, 200), 'error');
-                    return;
+                    } catch (error) {
+                        console.error('步数同步失败:', error);
+                        let errorMsg = '网络请求失败，请检查您的网络连接';
+
+                        if (error.response) {
+                            errorMsg = error.response.data?.message || 
+                                       error.response.data?.error || 
+                                       `服务器返回错误 (${error.response.status})`;
+                        } else if (error.code === 'ECONNABORTED') {
+                            errorMsg = '请求超时，请稍后重试';
+                        } else if (error.message && error.message.includes('CORS')) {
+                            errorMsg = '请求被跨域限制阻止，请直接在浏览器地址栏输入完整 URL 测试';
+                        }
+
+                        await this.showAlert('error', '同步失败', errorMsg);
+                    } finally {
+                        this.submitting = false;
+                    }
+                },
+
+                showAlert(icon, title, text) {
+                    return Swal.fire({
+                        icon: icon,
+                        title: title,
+                        text: text,
+                        confirmButtonText: '好的',
+                        confirmButtonColor: '#833ab4',
+                        background: '#ffffff',
+                        customClass: {
+                            popup: 'swal2-popup',
+                            title: 'swal2-title',
+                            confirmButton: 'swal2-confirm',
+                        },
+                        showClass: {
+                            popup: 'animate__animated animate__fadeInUp animate__faster'
+                        },
+                        hideClass: {
+                            popup: 'animate__animated animate__fadeOutDown animate__faster'
+                        },
+                    });
                 }
-
-                // 显示返回结果（兼容多种返回格式）
-                if (data.code === 200 || data.success === true || data.status === 'success') {
-                    showResult('✅ 刷步成功！\n' + JSON.stringify(data, null, 2), 'success');
-                } else if (data.code === 200 && !data.success) {
-                    showResult('✅ 请求完成\n' + JSON.stringify(data, null, 2), 'success');
-                } else {
-                    showResult('❌ 刷步失败\n' + JSON.stringify(data, null, 2), 'error');
-                }
-
-            } catch (err) {
-                let errorMsg = err.message;
-                if (errorMsg.includes('CORS') || errorMsg.includes('fetch')) {
-                    errorMsg = '请求被阻止（可能是跨域限制）。\n\n' +
-                               '解决方法：\n' +
-                               '1. 安装浏览器 CORS 插件（如 Allow CORS）\n' +
-                               '2. 或使用后端代理转发请求\n' +
-                               '3. 或直接在浏览器地址栏输入完整 URL 测试';
-                }
-                showResult('❌ 网络错误：' + errorMsg, 'error');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = '立即刷步';
             }
         });
-
-        function showResult(message, type) {
-            const resultDiv = document.getElementById('result');
-            resultDiv.className = 'result ' + type;
-            resultDiv.textContent = message;
-        }
-
-        // 浏览器地址栏直接测试示例
-        // https://api.suyanw.cn/api/xiaomi.php?phone=你的账号&password=你的密码&step=98800
     </script>
 </body>
 </html>
